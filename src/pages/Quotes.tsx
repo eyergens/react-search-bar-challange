@@ -1,44 +1,62 @@
-import List from '../components/List';
-import Button from '../components/ButtonComponent.tsx';
-import {Box, TextField, Stack} from '@mui/material';
-import React, {useState} from 'react';
+import Option from '../components/Option';
+import Form, {type QuoteFormProps} from '../components/Form';
+import {Box, Typography} from '@mui/material';
+import {useState} from 'react';
 
-interface QuoteProps {
-  quotes: string[];
-  addQuote: (newQuote: string) => void;
-}
+export default function Quotes() {
+  const [quoteOptions, setQuoteOptions] = useState([
+    {
+      id: 1,
+      downPayment: 3000,
+      monthlyRate: 520,
+      term: 60,
+      interestRate: 5.8,
+    },
+    {
+      id: 2,
+      downPayment: 10000,
+      monthlyRate: 380,
+      term: 60,
+      interestRate: 5.4,
+    },
+    {
+      id: 3,
+      downPayment: 8000,
+      monthlyRate: 603,
+      term: 40,
+      interestRate: 5.5,
+    },
+  ]);
 
-export default function Quotes({quotes, addQuote}: QuoteProps) {
-  const [quote, setQuote] = useState('');
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!quote) {
-      return;
-    }
-    addQuote(quote);
-    setQuote('');
-  }
+  const addQuoteOption: QuoteFormProps['addQuoteOption'] = (values) => {
+    const newOption = {
+      id: quoteOptions.length + 1,
+      downPayment: values.downPayment,
+      monthlyRate: values.monthlyRate,
+      term: values.term,
+      interestRate: values.interestRate,
+    };
+    setQuoteOptions([...quoteOptions, newOption]);
+  };
 
   return (
     <>
-      <Box component="form" onSubmit={handleSubmit}>
-        <Stack sx={{ maxWidth: '50%' }} direction="row" spacing={2}>
-          <TextField
-            label="Quote"
-            required
-            value={quote}
-            multiline
-            fullWidth
-            rows={2}
-            onChange={(e) => setQuote(e.target.value)}
-          />
-          <Button text={'Add'}></Button>
-        </Stack>
+      <Typography variant="h4" gutterBottom>
+        Car Quote Options
+      </Typography>
+      <Box sx={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        'justify-content': 'center'
+      }} p={3}>
+        {
+          quoteOptions.map((quote) => (
+            <Option key={quote.id} option={quote}/>
+          ))
+        }
       </Box>
-      {
-        quotes.length === 0 ? <List list={["Add New Quotes!!"]}/> : <List list={quotes}/>
-      }
+
+      <Form addQuoteOption={addQuoteOption}/>
     </>
   );
 }
