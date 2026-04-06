@@ -1,6 +1,6 @@
-import {Box, OutlinedInput, Button, Paper, Typography, InputAdornment, InputLabel, FormControl} from '@mui/material';
-import React, {useState} from 'react';
-import AddIcon from "@mui/icons-material/Add";
+import {Box, OutlinedInput, Button, Paper, Typography, InputAdornment, InputLabel, FormControl} from '@mui/material'
+import React, {useState} from 'react'
+import AddIcon from "@mui/icons-material/Add"
 
 export interface QuoteFormProps {
   addQuoteOption?: (values: {
@@ -39,14 +39,14 @@ export default function Form({addQuoteOption}: QuoteFormProps) {
 
   return (
     <>
-      <Box component="form" onSubmit={handleSubmit}>
+      <Box p={2} component="form" onSubmit={handleSubmit}>
         <Paper
+          sx={{padding: '16px', marginBottom: '16px'}}
           elevation={3}
-          style={{padding: '16px', marginBottom: '16px'}}
         >
           <Typography variant="h6">New Quote Option</Typography>
           <Box display="flex" flexDirection="column" gap={2} mt={2}>
-            <FormControl sx={{m: 1, width: '25ch', 'align-self': 'center'}} variant="outlined">
+            <FormControl sx={{m: 1, width: '25ch', alignSelf: 'center'}} variant="outlined">
               <InputLabel htmlFor='downPayment'>Down Payment</InputLabel>
               <OutlinedInput
                 required
@@ -61,7 +61,7 @@ export default function Form({addQuoteOption}: QuoteFormProps) {
                 }}
               />
             </FormControl>
-            <FormControl sx={{m: 1, width: '25ch', 'align-self': 'center'}} variant="outlined">
+            <FormControl sx={{m: 1, width: '25ch', alignSelf: 'center'}} variant="outlined">
               <InputLabel htmlFor='monthlyRate'>Monthly Rate</InputLabel>
               <OutlinedInput
                 required
@@ -76,7 +76,7 @@ export default function Form({addQuoteOption}: QuoteFormProps) {
                 }}
               />
             </FormControl>
-            <FormControl sx={{m: 1, width: '25ch', 'align-self': 'center'}} variant="outlined">
+            <FormControl sx={{m: 1, width: '25ch', alignSelf: 'center'}} variant="outlined">
               <InputLabel htmlFor='term'>Term (months)</InputLabel>
               <OutlinedInput
                 required
@@ -90,7 +90,7 @@ export default function Form({addQuoteOption}: QuoteFormProps) {
                 }}
               />
             </FormControl>
-            <FormControl sx={{m: 1, width: '25ch', 'align-self': 'center'}} variant="outlined">
+            <FormControl sx={{m: 1, width: '25ch', alignSelf: 'center'}} variant="outlined">
               <InputLabel htmlFor='interestRate'>Interest Rate</InputLabel>
               <OutlinedInput
                 required

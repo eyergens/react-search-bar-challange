@@ -1,7 +1,7 @@
-import Option from '../components/Option';
-import Form, {type QuoteFormProps} from '../components/Form';
-import {Box, Typography} from '@mui/material';
-import {useState} from 'react';
+import Option from '../components/Option'
+import Form, {type QuoteFormProps} from '../components/Form'
+import {Box, Typography} from '@mui/material'
+import {useState} from 'react'
 
 export default function Quotes() {
   const [quoteOptions, setQuoteOptions] = useState([
@@ -47,8 +47,8 @@ export default function Quotes() {
       <Box sx={{
         display: 'flex',
         flexWrap: 'wrap',
-        'justify-content': 'center'
-      }} p={3}>
+        justifyContent: 'center'
+      }} p={2}>
         {
           quoteOptions.map((quote) => (
             <Option key={quote.id} option={quote}/>
