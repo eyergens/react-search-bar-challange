@@ -1,4 +1,4 @@
-import {BrowserRouter, Routes, Route, Link} from 'react-router-dom'
+import {Routes, Route, Link, HashRouter} from 'react-router-dom'
 import {ThemeProvider, createTheme} from '@mui/material/styles'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -32,7 +32,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline/>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
+        <HashRouter>
           <Toolbar sx={{height: 80}}>
             {/* Navigation */}
             <nav>
@@ -65,9 +65,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Search/>}/>
             <Route path="/quotes" element={<Quotes/>}/>
-            <Route path="*" element={<PageNotFound />} />
+            <Route path="*" element={<PageNotFound/>}/>
           </Routes>
-        </BrowserRouter>
+        </HashRouter>
       </QueryClientProvider>
     </ThemeProvider>
   );
