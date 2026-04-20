@@ -35,6 +35,12 @@ interface ValueSearchResult {
   country: string;
 }
 
+interface Make {
+  displayName: string;
+  value: string;
+}
+
+
 export interface Model {
   Make_ID: number;
   Make_Name: string;
@@ -53,38 +59,38 @@ const fetchMarketValueSearchResults = async (make: string, model: string, year: 
 };
 
 export default function Search() {
-  const [carMakes, setCarMakes] = useState<string[]>([]);
-  const [make, setMake] = useState('');
+  const [carMakes, setCarMakes] = useState<Make[]>([]);
+  const [make, setMake] = useState<Make>();
   const [model, setModel] = useState('');
   const [year, setYear] = useState(dayjs());
   const [filters, setFilters] = useState({make: '', model: '', year: dayjs().year()});
 
   useEffect(() => {
     Papa.parse(carMakesCSV, {
-      header: false,
+      header: true,
       skipEmptyLines: true,
-      complete: (results: { data: string[][]; }) => {
-        const makes = results.data.map((row: string[]) => row[0]);
-        setCarMakes(makes);
+      complete: (results) => {
+        setCarMakes(results.data as Make[]);
       },
     });
   }, []);
 
   const modelsQuery = useQuery({
     queryKey: ['search', make],
-    queryFn: () => fetchModelSearchResults(make),
+    queryFn: () => fetchModelSearchResults(make?.displayName ?? ''),
     enabled: !!make,
   })
 
   const valueQuery = useQuery({
     queryKey: ['search', filters],
-    queryFn: () => fetchMarketValueSearchResults(make, model, year.year()),
+    queryFn: () => fetchMarketValueSearchResults(make?.value ?? '', model, year.year()),
     enabled: !!filters.make && !!filters.model && !!filters.year,
+    retry: false
   })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setFilters({make: make, model: model, year: year.year()});
+    setFilters({make: make?.value ?? '', model: model, year: year.year()});
   };
 
   return (
@@ -97,11 +103,12 @@ export default function Search() {
         >
           <Autocomplete
             options={carMakes}
-            getOptionLabel={(option) => option}
+            getOptionLabel={(option) => option.displayName}
             value={make}
             onChange={(_event, newValue) => {
+              console.log(newValue);
               setModel('');
-              setMake(newValue ?? '');
+              setMake(newValue ?? {} as Make);
             }}
             renderInput={(params) => (
               <TextField

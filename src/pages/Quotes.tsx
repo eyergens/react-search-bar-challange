@@ -30,13 +30,17 @@ export default function Quotes() {
 
   const addQuoteOption: QuoteFormProps['addQuoteOption'] = (values) => {
     const newOption = {
-      id: quoteOptions.length + 1,
+      id: (quoteOptions.at(-1)?.id ?? 1) + 1,
       downPayment: values.downPayment,
       monthlyRate: values.monthlyRate,
       term: values.term,
       interestRate: values.interestRate,
     };
     setQuoteOptions([...quoteOptions, newOption]);
+  };
+
+  const removeQuoteOption = (id: number) => {
+    setQuoteOptions(quoteOptions.filter(option => option.id !== id));
   };
 
   return (
@@ -51,7 +55,7 @@ export default function Quotes() {
       }} p={2}>
         {
           quoteOptions.map((quote) => (
-            <Option key={quote.id} option={quote}/>
+            <Option key={quote.id} option={quote} removeQuoteOption={removeQuoteOption}/>
           ))
         }
       </Box>
