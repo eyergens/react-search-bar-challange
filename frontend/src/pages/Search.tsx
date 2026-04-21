@@ -7,7 +7,7 @@ import {
   TextField
 } from '@mui/material'
 import React, {useEffect, useState} from "react";
-import axios, {type AxiosError} from "axios";
+import axios from "axios";
 import {useQuery} from "@tanstack/react-query";
 import SearchIcon from '@mui/icons-material/Search';
 import carMakesCSV from '../lib/makes.csv?raw';
@@ -17,7 +17,7 @@ import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 
-const apiKey = import.meta.env.VITE_CAR_API_KEY;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 interface ModelSearchResult {
   Count: number;
@@ -33,6 +33,8 @@ interface ValueSearchResult {
   valuationPrice: number;
   currency: string;
   country: string;
+  error: string;
+  message: string;
 }
 
 interface Make {
@@ -54,7 +56,16 @@ const fetchModelSearchResults = async (query: string): Promise<ModelSearchResult
 };
 
 const fetchMarketValueSearchResults = async (make: string, model: string, year: number): Promise<ValueSearchResult> => {
-  const {data} = await axios.get<ValueSearchResult>(`https://api.carapi.dev/v1/vehicle-valuation?token=${apiKey}&make=${make}&model=${model}&year=${year}&country=US`);
+  const {data} = await axios.get<ValueSearchResult>(
+    `${API_BASE_URL}/api/vehicle-valuation`,
+    {
+      params: {
+        make,
+        model,
+        year
+      }
+    }
+  );
   return data;
 };
 
@@ -106,7 +117,6 @@ export default function Search() {
             getOptionLabel={(option) => option.displayName}
             value={make}
             onChange={(_event, newValue) => {
-              console.log(newValue);
               setModel('');
               setMake(newValue ?? {} as Make);
             }}
@@ -176,13 +186,17 @@ export default function Search() {
         </Paper>
 
         {valueQuery.isLoading && <p>Loading...</p>}
-        {valueQuery.isError &&
-          <Typography variant={"h4"}>
-            Error: {((valueQuery.error as AxiosError).response?.data as { error: string }).error}
-          </Typography>
+        {
+          valueQuery.data?.error &&
+          <>
+            <Typography variant={"h4"}>Error:</Typography>
+            <Typography variant={"h5"}>{valueQuery.data?.message}</Typography>
+          </>
         }
-        {valueQuery.data != undefined ?
-          <Typography variant={"h4"}>Estimated Value: ${valueQuery.data.valuationPrice}</Typography> : ''}
+        {
+          (valueQuery.isSuccess && !valueQuery.data?.error) &&
+          <Typography variant={"h4"}>Estimated Value: ${valueQuery.data?.valuationPrice}</Typography>
+        }
       </Box>
     </>
   );
