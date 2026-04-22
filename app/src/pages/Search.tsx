@@ -58,6 +58,7 @@ const fetchMarketValueSearchResults = async (make: string, model: string, year: 
     params: { make, model, year }
   });
 
+  console.log(data);
   return data;
 };
 
