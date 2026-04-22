@@ -58,7 +58,6 @@ const fetchMarketValueSearchResults = async (make: string, model: string, year: 
     params: { make, model, year }
   });
 
-  console.log(data);
   return data;
 };
 
@@ -183,7 +182,7 @@ export default function Search() {
           valueQuery.data?.error &&
           <>
             <Typography variant={"h4"}>Error:</Typography>
-            <Typography variant={"h5"}>{valueQuery.data?.message}</Typography>
+            <Typography variant={"h5"}>{valueQuery.data?.message ?? valueQuery.data?.error}</Typography>
           </>
         }
         {
