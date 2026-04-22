@@ -7,7 +7,6 @@ import Quotes from './pages/Quotes'
 import Search from "./pages/Search"
 import {Button, type PaletteMode, Toolbar} from "@mui/material";
 import {useMemo, useState} from "react";
-import PageNotFound from "./pages/404.tsx";
 import {indigo} from "@mui/material/colors";
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -65,7 +64,6 @@ function App() {
           <Routes>
             <Route path="/" element={<Search/>}/>
             <Route path="/quotes" element={<Quotes/>}/>
-            <Route path="*" element={<PageNotFound/>}/>
           </Routes>
         </BrowserRouter>
       </QueryClientProvider>
