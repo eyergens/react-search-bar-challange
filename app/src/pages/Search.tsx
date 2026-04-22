@@ -17,8 +17,6 @@ import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 interface ModelSearchResult {
   Count: number;
   Message: string;
@@ -56,16 +54,10 @@ const fetchModelSearchResults = async (query: string): Promise<ModelSearchResult
 };
 
 const fetchMarketValueSearchResults = async (make: string, model: string, year: number): Promise<ValueSearchResult> => {
-  const {data} = await axios.get<ValueSearchResult>(
-    `${API_BASE_URL}/api/vehicle-valuation`,
-    {
-      params: {
-        make,
-        model,
-        year
-      }
-    }
-  );
+  const {data} = await axios.get<ValueSearchResult>("/api/vehicle-valuation", {
+    params: { make, model, year }
+  });
+
   return data;
 };
 
