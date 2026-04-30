@@ -1,20 +1,11 @@
 import {Box, OutlinedInput, Button, Paper, Typography, InputAdornment, InputLabel, FormControl} from '@mui/material'
 import React, {useState} from 'react'
 import AddIcon from "@mui/icons-material/Add"
-
-export interface QuoteFormProps {
-  addQuoteOption?: (values: {
-    downPayment: number;
-    monthlyRate: number;
-    term: number;
-    interestRate: number;
-  }) => void;
-}
+import type {QuoteFormProps} from "../lib/types.ts";
 
 export default function Form({addQuoteOption}: QuoteFormProps) {
   const [newQuote, setNewQuotes] = useState({
     downPayment: 0,
-    monthlyRate: 0,
     term: 0,
     interestRate: 0
   });
@@ -31,7 +22,6 @@ export default function Form({addQuoteOption}: QuoteFormProps) {
     addQuoteOption?.(newQuote);
     setNewQuotes({
       downPayment: 0,
-      monthlyRate: 0,
       term: 0,
       interestRate: 0.0
     })
@@ -53,21 +43,6 @@ export default function Form({addQuoteOption}: QuoteFormProps) {
               type="number"
               name="downPayment"
               value={newQuote.downPayment}
-              onChange={handleChange}
-              startAdornment={<InputAdornment position="start">$</InputAdornment>}
-              inputProps={{
-                min: 0
-              }}
-            />
-          </FormControl>
-          <FormControl sx={{m: 1, width: '25ch', alignSelf: 'center'}} variant="outlined">
-            <InputLabel htmlFor='monthlyRate'>Monthly Rate</InputLabel>
-            <OutlinedInput
-              required
-              label="Monthly Rate"
-              type="number"
-              name="monthlyRate"
-              value={newQuote.monthlyRate}
               onChange={handleChange}
               startAdornment={<InputAdornment position="start">$</InputAdornment>}
               inputProps={{

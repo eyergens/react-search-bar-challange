@@ -2,23 +2,30 @@ import type {Handler} from "@netlify/functions";
 
 export const handler: Handler = async (event) => {
   try {
-    const {make, model, year} = event.queryStringParameters ?? {};
+    const {price, downPayment, loanTerm, interestRate} = event.queryStringParameters ?? {};
 
-    if (!make || !model || !year) {
+    if (!!price || !!downPayment || !!loanTerm || !!interestRate) {
+      let message: string;
+      if (!!price) {
+        message = "Select a Vehicle Value under the Search tab before continuing";
+      } else {
+        message = "Select a Quote Option to continue";
+      }
+
       return {
         statusCode: 400,
-        body: JSON.stringify({error: "Bad Request", message: "Missing parameters"})
+        body: JSON.stringify({error: "Bad Request", message: message})
       };
     }
 
     const apiUrl = new URL(
-      "https://api.carapi.dev/v1/vehicle-valuation"
+      "https://api.carapi.dev/v1/payments/JHMZE2H79AS019110"
     );
     apiUrl.searchParams.set("token", process.env.CAR_API_KEY!);
-    apiUrl.searchParams.set("make", make);
-    apiUrl.searchParams.set("model", model);
-    apiUrl.searchParams.set("year", year);
-    apiUrl.searchParams.set("country", "US");
+    apiUrl.searchParams.set("price", price);
+    apiUrl.searchParams.set("downPayment", downPayment);
+    apiUrl.searchParams.set("loanTerm", loanTerm);
+    apiUrl.searchParams.set("interestRate", interestRate);
 
     const response = await fetch(apiUrl.toString());
     const data = await response.json();

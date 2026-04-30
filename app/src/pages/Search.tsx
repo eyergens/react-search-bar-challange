@@ -1,4 +1,4 @@
-import {Autocomplete, Box, Button, Paper, TextField, Typography} from '@mui/material'
+import {Autocomplete, Box, Button, IconButton, Paper, TextField, Typography} from '@mui/material'
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {useQuery} from "@tanstack/react-query";
@@ -9,37 +9,9 @@ import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-
-interface ModelSearchResult {
-  Count: number;
-  Message: string;
-  SearchCriteria: string;
-  Results: [];
-}
-
-interface ValueSearchResult {
-  make: string;
-  model: string;
-  year: number;
-  valuationPrice: number;
-  currency: string;
-  country: string;
-  error: string;
-  message: string;
-}
-
-interface Make {
-  displayName: string;
-  value: string;
-}
-
-
-export interface Model {
-  Make_ID: number;
-  Make_Name: string;
-  Model_ID: number;
-  Model_Name: string;
-}
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import type {MakeProps, ModelProps, ModelSearchResult, ValueSearchResult} from "../lib/types.ts";
 
 const fetchModelSearchResults = async (query: string): Promise<ModelSearchResult> => {
   return axios.get<ModelSearchResult>(`https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/${query}?format=json`
@@ -60,9 +32,12 @@ const fetchMarketValueSearchResults = async (make: string, model: string, year: 
   });
 };
 
-export default function Search() {
-  const [carMakes, setCarMakes] = useState<Make[]>([]);
-  const [make, setMake] = useState<Make | null>(null);
+export default function Search({price, savePrice}: {
+  price: number;
+  savePrice: (price: number) => void,
+}) {
+  const [carMakes, setCarMakes] = useState<MakeProps[]>([]);
+  const [make, setMake] = useState<MakeProps | null>(null);
   const [model, setModel] = useState('');
   const [year, setYear] = useState(dayjs());
   const [filters, setFilters] = useState({make: '', model: '', year: dayjs().year()});
@@ -72,20 +47,20 @@ export default function Search() {
       header: true,
       skipEmptyLines: true,
       complete: (results) => {
-        setCarMakes(results.data as Make[]);
+        setCarMakes(results.data as MakeProps[]);
       },
     });
   }, []);
 
   const modelsQuery = useQuery({
-    queryKey: ['search', make],
+    queryKey: ['models', make],
     queryFn: () => fetchModelSearchResults(make?.displayName ?? ''),
     enabled: !!make,
   })
 
   const valueQuery = useQuery({
-    queryKey: ['search', filters],
-    queryFn: () => fetchMarketValueSearchResults(make?.value ?? '', model, year.year()),
+    queryKey: ['valuation', filters],
+    queryFn: () => fetchMarketValueSearchResults(filters.make, filters.model, filters.year),
     enabled: !!filters.make && !!filters.model && !!filters.year,
     retry: false
   })
@@ -122,7 +97,7 @@ export default function Search() {
             )}
           />
           <Autocomplete
-            options={modelsQuery.data?.Results.map((model: Model) => (model.Model_Name)) || []}
+            options={modelsQuery.data?.Results.map((model: ModelProps) => (model.Model_Name)) || []}
             getOptionLabel={option => option}
             noOptionsText={
               modelsQuery.isError
@@ -186,7 +161,17 @@ export default function Search() {
         }
         {
           (valueQuery.isSuccess && !valueQuery.data?.error) &&
-          <Typography variant={"h4"}>Estimated Value: ${valueQuery.data?.valuationPrice}</Typography>
+          <>
+            <Typography variant={"h4"}>Estimated Value: ${valueQuery.data?.valuationPrice}</Typography>
+            <IconButton onClick={() => {
+              savePrice(valueQuery.data?.valuationPrice)
+            }}>
+              {
+                price !== valueQuery.data?.valuationPrice ? <FavoriteBorderIcon></FavoriteBorderIcon> :
+                  <FavoriteIcon></FavoriteIcon>
+              }
+            </IconButton>
+          </>
         }
       </Box>
     </>

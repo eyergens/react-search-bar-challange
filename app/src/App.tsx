@@ -16,6 +16,7 @@ const queryClient = new QueryClient()
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>("light");
+  const [price, setPrice] = useState(0);
 
   const theme = useMemo(
     () =>
@@ -27,6 +28,10 @@ function App() {
       }),
     [mode]
   );
+
+  const savePrice = (price: number) => {
+    setPrice(price);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -63,8 +68,8 @@ function App() {
           </Toolbar>
           {/* Routes */}
           <Routes>
-            <Route path="/" element={<Search/>}/>
-            <Route path="/quotes" element={<Quotes/>}/>
+            <Route path="/" element={<Search price={price} savePrice={savePrice}/>}/>
+            <Route path="/quotes" element={<Quotes price={price}/>}/>
             <Route path="*" element={<PageNotFound/>}/>
           </Routes>
         </BrowserRouter>
