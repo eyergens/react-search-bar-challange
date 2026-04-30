@@ -72,7 +72,7 @@ export default function Search({price, savePrice}: {
 
   return (
     <>
-      <Typography variant="h4" gutterBottom>Search</Typography>
+      <Typography variant="h4" gutterBottom>Value Search</Typography>
       <Box p={2} component="form" onSubmit={handleSubmit}>
         <Paper
           sx={{padding: '16px', marginBottom: '16px'}}
@@ -89,7 +89,7 @@ export default function Search({price, savePrice}: {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Make"
+                label="Vehicle Make"
                 variant="outlined"
                 required
                 sx={{m: 1, width: '25ch'}}
@@ -111,7 +111,7 @@ export default function Search({price, savePrice}: {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Model"
+                label="Vehicle Model"
                 variant="outlined"
                 required
                 sx={{m: 1, width: '25ch'}}

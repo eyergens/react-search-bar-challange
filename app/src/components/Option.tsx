@@ -25,7 +25,10 @@ export default function Option({option, removeQuoteOption, selectedId, setSelect
     >
       <Box display="flex" flexDirection="row" alignItems="center">
         <Typography variant="h5">Quote Option {option.id}</Typography>
-        <IconButton onClick={() => removeQuoteOption(option.id)}>
+        <IconButton onClick={(e) => {
+          e.stopPropagation();
+          removeQuoteOption(option.id);
+        }}>
           <DeleteIcon></DeleteIcon>
         </IconButton>
       </Box>

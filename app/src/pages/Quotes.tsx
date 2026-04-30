@@ -72,7 +72,7 @@ export default function Quotes({price}: {
   return (
     <>
       <Typography variant="h4" gutterBottom>
-        Car Quote Options
+        Vehicle Quotes
       </Typography>
       <Box sx={{
         display: 'flex',
