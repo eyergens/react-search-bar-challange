@@ -1,11 +1,4 @@
-import {
-  Box,
-  Paper,
-  Typography,
-  Button,
-  Autocomplete,
-  TextField
-} from '@mui/material'
+import {Autocomplete, Box, Button, Paper, TextField, Typography} from '@mui/material'
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {useQuery} from "@tanstack/react-query";
@@ -49,21 +42,27 @@ export interface Model {
 }
 
 const fetchModelSearchResults = async (query: string): Promise<ModelSearchResult> => {
-  const {data} = await axios.get<ModelSearchResult>(`https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/${query}?format=json`);
-  return data;
+  return axios.get<ModelSearchResult>(`https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/${query}?format=json`
+  ).then((response) => {
+    return response.data;
+  }).catch((error) => {
+    return error;
+  });
 };
 
 const fetchMarketValueSearchResults = async (make: string, model: string, year: number): Promise<ValueSearchResult> => {
-  const {data} = await axios.get<ValueSearchResult>("/api/vehicle-valuation", {
-    params: { make, model, year }
+  return axios.get<ValueSearchResult>("/api/vehicle-valuation", {
+    params: {make, model, year}
+  }).then((response) => {
+    return response.data;
+  }).catch((error) => {
+    return error.response.data;
   });
-
-  return data;
 };
 
 export default function Search() {
   const [carMakes, setCarMakes] = useState<Make[]>([]);
-  const [make, setMake] = useState<Make>();
+  const [make, setMake] = useState<Make | null>(null);
   const [model, setModel] = useState('');
   const [year, setYear] = useState(dayjs());
   const [filters, setFilters] = useState({make: '', model: '', year: dayjs().year()});
@@ -110,7 +109,7 @@ export default function Search() {
             value={make}
             onChange={(_event, newValue) => {
               setModel('');
-              setMake(newValue ?? {} as Make);
+              setMake(newValue);
             }}
             renderInput={(params) => (
               <TextField
@@ -182,7 +181,7 @@ export default function Search() {
           valueQuery.data?.error &&
           <>
             <Typography variant={"h4"}>Error:</Typography>
-            <Typography variant={"h5"}>{valueQuery.data?.message ?? valueQuery.data?.error}</Typography>
+            <Typography variant={"h5"}>{valueQuery.data?.message}</Typography>
           </>
         }
         {

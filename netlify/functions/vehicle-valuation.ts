@@ -24,10 +24,11 @@ export const handler: Handler = async (event) => {
     const data = await response.json();
 
     return {
-      statusCode: 200,
+      statusCode: response.status,
       body: JSON.stringify(data),
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Cache-Control": "public, max-age=3600"
       }
     };
   } catch (error) {
